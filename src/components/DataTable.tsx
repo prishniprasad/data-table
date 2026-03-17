@@ -1,7 +1,9 @@
+import { useState, useRef } from 'react';
 import { tableData, type TableRow } from '../data/tableData';
 import StatusIcon from './icons/StatusIcon';
 import OverflowMenuIcon from './icons/OverflowMenuIcon';
 import MoreVertIcon from './icons/MoreVertIcon';
+import DropdownMenu from './DropdownMenu';
 
 function DistributionIdCell({ value }: { value: string }) {
   // We want to preserve at least the first block and exactly the last 5 chars.
@@ -110,20 +112,67 @@ function OverflowMenuCell() {
   );
 }
 
-function ColumnHeader({ label, width }: { label: string; width?: string }) {
+type MenuOptionType = 'sort-asc' | 'sort-desc' | 'group' | 'freeze';
+
+function ColumnHeader({ 
+  label, 
+  width, 
+  allowedOptions = ['sort-asc', 'sort-desc', 'group', 'freeze'] 
+}: { 
+  label: string; 
+  width?: string;
+  allowedOptions?: MenuOptionType[];
+}) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  const toggleMenu = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (headerRef.current) {
+      setAnchorRect(headerRef.current.getBoundingClientRect());
+      setIsMenuOpen(!isMenuOpen);
+    }
+  };
+
   return (
-    <div
-      className="group bg-[#262626] hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative"
-      style={width ? { width } : undefined}
-    >
-      <span className="text-[#c6c6c6] text-sm leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
-        {label}
-      </span>
-      <div className="opacity-0 group-hover:opacity-100 transition-colors duration-200 text-[#c6c6c6] flex shrink-0 items-center justify-center hover:bg-[#525252] w-4 h-4 rounded-[4px] relative z-10 cursor-pointer">
-        <MoreVertIcon className="w-full h-full" />
+    <>
+      <div
+        ref={headerRef}
+        className={`group ${
+          isMenuOpen ? 'bg-[#333333]' : 'bg-[#262626]'
+        } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative`}
+        style={width ? { width } : undefined}
+      >
+        <span className="text-[#c6c6c6] text-sm leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
+          {label}
+        </span>
+        <div 
+          onClick={toggleMenu}
+          className={`${
+            isMenuOpen ? 'opacity-100 bg-[#525252]' : 'opacity-0 group-hover:opacity-100'
+          } transition-all duration-200 text-[#c6c6c6] flex shrink-0 items-center justify-center w-4 h-4 rounded-[4px] relative z-10 cursor-pointer hover:bg-[#525252]`}
+        >
+          <MoreVertIcon className="w-full h-full" />
+        </div>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-[rgba(141,141,141,0.58)] h-[28px] w-[4px] rounded-tl-[1px] rounded-bl-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
       </div>
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-[rgba(141,141,141,0.58)] h-[28px] w-[4px] rounded-tl-[1px] rounded-bl-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-    </div>
+      
+      {isMenuOpen && anchorRect && (
+        <DropdownMenu
+          anchorRect={anchorRect}
+          onClose={() => setIsMenuOpen(false)}
+          options={([
+            { id: 'sort-asc', label: 'Sort ascending', icon: 'asc' as const, onClick: () => console.log('Sort asc') },
+            { id: 'sort-desc', label: 'Sort descending', icon: 'desc' as const, onClick: () => console.log('Sort desc') },
+            { id: 'group', label: 'Group', indented: true, onClick: () => console.log('Group') },
+            { id: 'freeze', label: 'Freeze', indented: true, onClick: () => console.log('Freeze') },
+          ] as const)
+            .filter(opt => allowedOptions.includes(opt.id as MenuOptionType))
+            .map(({ id, ...rest }) => rest as any)}
+        />
+      )}
+    </>
   );
 }
 
@@ -135,7 +184,7 @@ export default function DataTable() {
       <div className="flex w-full min-w-fit">
         {/* Column 1: Asset name — flex fill, min 240px */}
         <div className="flex flex-col flex-1 min-w-[240px]">
-          <ColumnHeader label="Asset name" />
+          <ColumnHeader label="Asset name" allowedOptions={['sort-asc', 'sort-desc', 'freeze']} />
           {rows.map((row) => (
             <AssetNameCell key={row.id} value={row.assetName} />
           ))}
@@ -143,7 +192,7 @@ export default function DataTable() {
 
         {/* Column 2: Distribution ID — flex fill, min 268px */}
         <div className="flex flex-col flex-1 min-w-[268px]">
-          <ColumnHeader label="Distribution ID" />
+          <ColumnHeader label="Distribution ID" allowedOptions={['freeze']} />
           {rows.map((row) => (
             <DistributionIdCell key={row.id} value={row.distributionId} />
           ))}
@@ -167,7 +216,7 @@ export default function DataTable() {
 
         {/* Column 5: Platform - License — flex fill, min 188px */}
         <div className="flex flex-col flex-1 min-w-[188px]">
-          <ColumnHeader label="Platform - License" />
+          <ColumnHeader label="Platform - License" allowedOptions={['group', 'freeze']} />
           {rows.map((row) => (
             <PlatformLicenseCell key={row.id} platform={row.platform} license={row.licenseRange} />
           ))}
@@ -175,7 +224,7 @@ export default function DataTable() {
 
         {/* Column 6: Distribution status — flex fill, min 160px */}
         <div className="flex flex-col flex-1 min-w-[160px]">
-          <ColumnHeader label="Distribution status" />
+          <ColumnHeader label="Distribution status" allowedOptions={['group', 'freeze']} />
           {rows.map((row) => (
             <StatusCell key={row.id} status={row.distributionStatus} />
           ))}
