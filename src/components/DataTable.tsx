@@ -1,0 +1,180 @@
+import { tableData, type TableRow } from '../data/tableData';
+import StatusIcon from './icons/StatusIcon';
+import OverflowMenuIcon from './icons/OverflowMenuIcon';
+
+function DistributionIdCell({ value }: { value: string }) {
+  const display = value.length > 16 ? value.slice(0, 16) + '...' : value;
+
+  return (
+    <div className="flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
+      <span
+        className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0 font-normal font-[Noto_Sans,sans-serif]"
+        title={value}
+      >
+        {display}
+      </span>
+    </div>
+  );
+}
+
+function AssetNameCell({ value }: { value: string }) {
+  return (
+    <div className="flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
+      <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0 font-normal font-[Noto_Sans,sans-serif]">
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function DateTimeCell({ date, time }: { date?: string | null; time?: string }) {
+  if (!date) {
+    return <div className="h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full" />;
+  }
+  return (
+    <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
+      <div className="flex flex-col min-w-0 w-full">
+        <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
+          {date}
+        </span>
+        {time && (
+          <span className="text-[#8d8d8d] text-xs leading-4 tracking-[0.032px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
+            {time}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PlatformLicenseCell({ platform, license }: { platform: string | null; license?: string }) {
+  if (!platform) {
+    return <div className="h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full" />;
+  }
+  return (
+    <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
+      <div className="flex flex-col min-w-0 w-full">
+        <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
+          {platform}
+        </span>
+        {license && (
+          <span className="text-[#8d8d8d] text-xs leading-4 tracking-[0.032px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
+            {license}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StatusCell({ status }: { status: 'Completed' | 'Failed' }) {
+  const isCompleted = status === 'Completed';
+  return (
+    <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
+      <div className="flex items-center gap-2">
+        <div className="flex items-center h-6 shrink-0">
+          <StatusIcon status={status} className="w-4 h-4 shrink-0" />
+        </div>
+        <span
+          className={`text-base leading-6 whitespace-nowrap font-normal font-[Noto_Sans,sans-serif] ${
+            isCompleted ? 'text-[#42be65]' : 'text-[#fa4d56]'
+          }`}
+        >
+          {status}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function OverflowMenuCell() {
+  return (
+    <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-14">
+      <button
+        className="flex items-center justify-center p-1 rounded hover:bg-white/10 transition-colors cursor-pointer text-[#c6c6c6]"
+        title="More options"
+      >
+        <OverflowMenuIcon className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
+
+function ColumnHeader({ label, width }: { label: string; width?: string }) {
+  return (
+    <div
+      className="bg-[#262626] border-b border-[#525252] flex items-center gap-2 h-10 px-4 py-[10px] shrink-0 w-full"
+      style={width ? { width } : undefined}
+    >
+      <span className="text-[#c6c6c6] text-sm leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
+        {label}
+      </span>
+    </div>
+  );
+}
+
+export default function DataTable() {
+  const rows: TableRow[] = tableData;
+
+  return (
+    <div className="w-full overflow-x-auto">
+      <div className="flex w-full min-w-fit">
+        {/* Column 1: Asset name — flex fill, min 240px */}
+        <div className="flex flex-col flex-1 min-w-[240px]">
+          <ColumnHeader label="Asset name" />
+          {rows.map((row) => (
+            <AssetNameCell key={row.id} value={row.assetName} />
+          ))}
+        </div>
+
+        {/* Column 2: Distribution ID — flex fill, min 268px */}
+        <div className="flex flex-col flex-1 min-w-[268px]">
+          <ColumnHeader label="Distribution ID" />
+          {rows.map((row) => (
+            <DistributionIdCell key={row.id} value={row.distributionId} />
+          ))}
+        </div>
+
+        {/* Column 3: Creation date — flex fill, min 160px */}
+        <div className="flex flex-col flex-1 min-w-[160px]">
+          <ColumnHeader label="Creation date" />
+          {rows.map((row) => (
+            <DateTimeCell key={row.id} date={row.creationDate} time={row.creationTime} />
+          ))}
+        </div>
+
+        {/* Column 4: Distribution date — flex fill, min 160px */}
+        <div className="flex flex-col flex-1 min-w-[160px]">
+          <ColumnHeader label="Distribution date" />
+          {rows.map((row) => (
+            <DateTimeCell key={row.id} date={row.distributionDate} time={row.distributionTime} />
+          ))}
+        </div>
+
+        {/* Column 5: Platform - License — flex fill, min 188px */}
+        <div className="flex flex-col flex-1 min-w-[188px]">
+          <ColumnHeader label="Platform - License" />
+          {rows.map((row) => (
+            <PlatformLicenseCell key={row.id} platform={row.platform} license={row.licenseRange} />
+          ))}
+        </div>
+
+        {/* Column 6: Distribution status — flex fill, min 160px */}
+        <div className="flex flex-col flex-1 min-w-[160px]">
+          <ColumnHeader label="Distribution status" />
+          {rows.map((row) => (
+            <StatusCell key={row.id} status={row.distributionStatus} />
+          ))}
+        </div>
+
+        {/* Column 7: Overflow menu — fixed 56px, sticky right */}
+        <div className="flex flex-col w-14 sticky right-0 z-10 bg-[#161616] shrink-0">
+          <div className="bg-[#262626] border-b border-[#525252] h-10 w-14 shrink-0" />
+          {rows.map((row) => (
+            <OverflowMenuCell key={row.id} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
