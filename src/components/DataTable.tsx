@@ -1,18 +1,28 @@
 import { tableData, type TableRow } from '../data/tableData';
 import StatusIcon from './icons/StatusIcon';
 import OverflowMenuIcon from './icons/OverflowMenuIcon';
+import MoreVertIcon from './icons/MoreVertIcon';
 
 function DistributionIdCell({ value }: { value: string }) {
-  const display = value.length > 16 ? value.slice(0, 16) + '...' : value;
+  // We want to preserve at least the first block and exactly the last 5 chars.
+  // We split the ID so CSS can truncate the first part with an ellipsis
+  // while keeping the last 5 characters fully visible at all times.
+  const startChars = value.length > 5 ? value.slice(0, -5) : value;
+  const endChars = value.length > 5 ? value.slice(-5) : '';
 
   return (
-    <div className="flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
-      <span
-        className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0 font-normal font-[Noto_Sans,sans-serif]"
+    <div className="flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full min-w-0">
+      <div 
+        className="flex min-w-0 flex-1 text-[#c6c6c6] text-base leading-6 font-normal font-[Noto_Sans,sans-serif]"
         title={value}
       >
-        {display}
-      </span>
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap min-w-[5ch]">
+          {startChars}
+        </span>
+        <span className="shrink-0 whitespace-nowrap">
+          {endChars}
+        </span>
+      </div>
     </div>
   );
 }
@@ -103,12 +113,16 @@ function OverflowMenuCell() {
 function ColumnHeader({ label, width }: { label: string; width?: string }) {
   return (
     <div
-      className="bg-[#262626] border-b border-[#525252] flex items-center gap-2 h-10 px-4 py-[10px] shrink-0 w-full"
+      className="group bg-[#262626] hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative"
       style={width ? { width } : undefined}
     >
       <span className="text-[#c6c6c6] text-sm leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
         {label}
       </span>
+      <div className="opacity-0 group-hover:opacity-100 transition-colors duration-200 text-[#c6c6c6] flex shrink-0 items-center justify-center hover:bg-[#525252] w-4 h-4 rounded-[4px] relative z-10 cursor-pointer">
+        <MoreVertIcon className="w-full h-full" />
+      </div>
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-[rgba(141,141,141,0.58)] h-[28px] w-[4px] rounded-tl-[1px] rounded-bl-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
     </div>
   );
 }
