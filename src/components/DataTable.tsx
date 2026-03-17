@@ -144,7 +144,7 @@ function ColumnHeader({
         } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative`}
         style={width ? { width } : undefined}
       >
-        <span className="text-[#c6c6c6] text-sm leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
+        <span className="text-[#c6c6c6] text-[14px] leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-['Noto_Sans',sans-serif]">
           {label}
         </span>
         <div 
