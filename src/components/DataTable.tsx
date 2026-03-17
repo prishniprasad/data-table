@@ -181,7 +181,7 @@ export default function DataTable() {
 
   return (
     <div className="w-full overflow-x-auto">
-      <div className="flex w-full min-w-fit">
+      <div className="flex w-full min-w-max">
         {/* Column 1: Asset name — flex fill, min 240px */}
         <div className="flex flex-col flex-1 min-w-[240px]">
           <ColumnHeader label="Asset name" allowedOptions={['sort-asc', 'sort-desc', 'freeze']} />
@@ -190,8 +190,8 @@ export default function DataTable() {
           ))}
         </div>
 
-        {/* Column 2: Distribution ID — flex fill, min 268px */}
-        <div className="flex flex-col flex-1 min-w-[268px]">
+        {/* Column 2: Distribution ID — flex fill, min 220px */}
+        <div className="flex flex-col flex-1 min-w-[220px]">
           <ColumnHeader label="Distribution ID" allowedOptions={['freeze']} />
           {rows.map((row) => (
             <DistributionIdCell key={row.id} value={row.distributionId} />
