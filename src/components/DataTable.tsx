@@ -239,6 +239,7 @@ export default function DataTable() {
   const rows: TableRow[] = tableData;
   const [frozenColumnIndex, setFrozenColumnIndex] = useState<number | null>(null);
   const [showActionBorder, setShowActionBorder] = useState(false);
+  const [isScrolledLeft, setIsScrolledLeft] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Calculate sticky left offsets
@@ -251,8 +252,7 @@ export default function DataTable() {
   const handleScroll = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-      // Show border if not scrolled all the way to the right
-      // We use a small threshold (1px) to avoid rounding issues
+      setIsScrolledLeft(scrollLeft > 0);
       setShowActionBorder(scrollLeft + clientWidth < scrollWidth - 1);
     }
   };
@@ -261,7 +261,7 @@ export default function DataTable() {
     const container = scrollContainerRef.current;
     if (container) {
       handleScroll(); // Initial check
-      container.addEventListener('scroll', handleScroll);
+      container.addEventListener('scroll', handleScroll, { passive: true });
       window.addEventListener('resize', handleScroll);
       return () => {
         container.removeEventListener('scroll', handleScroll);
@@ -300,7 +300,7 @@ export default function DataTable() {
           return (
             <div 
               key={col.id} 
-              className={`flex flex-col flex-1 ${isSticky ? 'sticky z-20 bg-[#161616]' : ''}`}
+              className={`flex flex-col flex-1 relative ${isSticky ? 'sticky z-20 bg-[#161616]' : ''}`}
               style={{ 
                 minWidth: col.minWidth,
                 ...(isSticky ? { left: leftOffset } : {})
@@ -316,6 +316,16 @@ export default function DataTable() {
                 isBoundary={isBoundary}
               />
               {rows.map((row) => renderCell(col.id, row, isBoundary))}
+
+              {isBoundary && (
+                <div 
+                  className="absolute left-full top-0 bottom-0 w-[6px] pointer-events-none transition-opacity duration-200 ease-in-out z-10"
+                  style={{
+                    background: 'linear-gradient(to right, rgba(0,0,0,0.30), rgba(0,0,0,0))',
+                    opacity: isScrolledLeft ? 1 : 0
+                  }}
+                />
+              )}
             </div>
           );
         })}
