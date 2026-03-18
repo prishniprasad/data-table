@@ -1,19 +1,20 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { tableData, type TableRow } from '../data/tableData';
 import StatusIcon from './icons/StatusIcon';
 import OverflowMenuIcon from './icons/OverflowMenuIcon';
 import MoreVertIcon from './icons/MoreVertIcon';
 import DropdownMenu from './DropdownMenu';
 
-function DistributionIdCell({ value }: { value: string }) {
-  // We want to preserve at least the first block and exactly the last 5 chars.
-  // We split the ID so CSS can truncate the first part with an ellipsis
-  // while keeping the last 5 characters fully visible at all times.
+function DistributionIdCell({ value, isBoundary }: { value: string; isBoundary: boolean }) {
   const startChars = value.length > 5 ? value.slice(0, -5) : value;
   const endChars = value.length > 5 ? value.slice(-5) : '';
 
   return (
-    <div className="flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full min-w-0">
+    <div 
+      className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full min-w-0 ${
+        isBoundary ? 'border-r border-r-[#393939]' : ''
+      }`}
+    >
       <div 
         className="flex min-w-0 flex-1 text-[#c6c6c6] text-base leading-6 font-normal font-[Noto_Sans,sans-serif]"
         title={value}
@@ -29,9 +30,13 @@ function DistributionIdCell({ value }: { value: string }) {
   );
 }
 
-function AssetNameCell({ value }: { value: string }) {
+function AssetNameCell({ value, isBoundary }: { value: string; isBoundary: boolean }) {
   return (
-    <div className="flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
+    <div 
+      className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
+        isBoundary ? 'border-r border-r-[#393939]' : ''
+      }`}
+    >
       <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0 font-normal font-[Noto_Sans,sans-serif]">
         {value}
       </span>
@@ -39,12 +44,22 @@ function AssetNameCell({ value }: { value: string }) {
   );
 }
 
-function DateTimeCell({ date, time }: { date?: string | null; time?: string }) {
+function DateTimeCell({ date, time, isBoundary }: { date?: string | null; time?: string; isBoundary: boolean }) {
   if (!date) {
-    return <div className="h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full" />;
+    return (
+      <div 
+        className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${
+          isBoundary ? 'border-r border-r-[#393939]' : ''
+        }`}
+      />
+    );
   }
   return (
-    <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
+    <div 
+      className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
+        isBoundary ? 'border-r border-r-[#393939]' : ''
+      }`}
+    >
       <div className="flex flex-col min-w-0 w-full">
         <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
           {date}
@@ -59,12 +74,22 @@ function DateTimeCell({ date, time }: { date?: string | null; time?: string }) {
   );
 }
 
-function PlatformLicenseCell({ platform, license }: { platform: string | null; license?: string }) {
+function PlatformLicenseCell({ platform, license, isBoundary }: { platform: string | null; license?: string; isBoundary: boolean }) {
   if (!platform) {
-    return <div className="h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full" />;
+    return (
+      <div 
+        className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${
+          isBoundary ? 'border-r border-r-[#393939]' : ''
+        }`}
+      />
+    );
   }
   return (
-    <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
+    <div 
+      className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
+        isBoundary ? 'border-r border-r-[#393939]' : ''
+      }`}
+    >
       <div className="flex flex-col min-w-0 w-full">
         <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
           {platform}
@@ -79,10 +104,14 @@ function PlatformLicenseCell({ platform, license }: { platform: string | null; l
   );
 }
 
-function StatusCell({ status }: { status: 'Completed' | 'Failed' }) {
+function StatusCell({ status, isBoundary }: { status: 'Completed' | 'Failed'; isBoundary: boolean }) {
   const isCompleted = status === 'Completed';
   return (
-    <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full">
+    <div 
+      className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
+        isBoundary ? 'border-r border-r-[#393939]' : ''
+      }`}
+    >
       <div className="flex items-center gap-2">
         <div className="flex items-center h-6 shrink-0">
           <StatusIcon status={status} className="w-4 h-4 shrink-0" />
@@ -117,11 +146,21 @@ type MenuOptionType = 'sort-asc' | 'sort-desc' | 'group' | 'freeze';
 function ColumnHeader({ 
   label, 
   width, 
-  allowedOptions = ['sort-asc', 'sort-desc', 'group', 'freeze'] 
+  allowedOptions = ['sort-asc', 'sort-desc', 'group', 'freeze'],
+  index,
+  frozenColumnIndex,
+  onFreeze,
+  onUnfreeze,
+  isBoundary
 }: { 
   label: string; 
   width?: string;
   allowedOptions?: MenuOptionType[];
+  index: number;
+  frozenColumnIndex: number | null;
+  onFreeze: (index: number) => void;
+  onUnfreeze: () => void;
+  isBoundary: boolean;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
@@ -141,8 +180,10 @@ function ColumnHeader({
         ref={headerRef}
         className={`group ${
           isMenuOpen ? 'bg-[#333333]' : 'bg-[#262626]'
-        } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative`}
-        style={width ? { width } : undefined}
+        } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative ${
+          isBoundary ? 'border-r border-r-[#393939]' : ''
+        }`}
+        style={width ? { width } : {}}
       >
         <span className="text-[#c6c6c6] text-[14px] leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-['Noto_Sans',sans-serif]">
           {label}
@@ -166,7 +207,16 @@ function ColumnHeader({
             { id: 'sort-asc', label: 'Sort ascending', icon: 'asc' as const, onClick: () => console.log('Sort asc') },
             { id: 'sort-desc', label: 'Sort descending', icon: 'desc' as const, onClick: () => console.log('Sort desc') },
             { id: 'group', label: 'Group', indented: true, onClick: () => console.log('Group') },
-            { id: 'freeze', label: 'Freeze', indented: true, onClick: () => console.log('Freeze') },
+            { 
+              id: 'freeze', 
+              label: isBoundary ? 'Unfreeze' : 'Freeze', 
+              indented: true, 
+              disabled: frozenColumnIndex !== null && index < frozenColumnIndex,
+              onClick: () => {
+                if (isBoundary) onUnfreeze();
+                else onFreeze(index);
+              } 
+            },
           ] as const)
             .filter(opt => allowedOptions.includes(opt.id as MenuOptionType))
             .map(({ id, ...rest }) => rest as any)}
@@ -176,63 +226,105 @@ function ColumnHeader({
   );
 }
 
+const COLUMNS = [
+  { id: 'asset-name', label: 'Asset name', minWidth: 240, allowedOptions: ['sort-asc', 'sort-desc', 'freeze'] as MenuOptionType[] },
+  { id: 'distribution-id', label: 'Distribution ID', minWidth: 220, allowedOptions: ['freeze'] as MenuOptionType[] },
+  { id: 'creation-date', label: 'Creation date', minWidth: 160, allowedOptions: ['sort-asc', 'sort-desc', 'group', 'freeze'] as MenuOptionType[] },
+  { id: 'distribution-date', label: 'Distribution date', minWidth: 160, allowedOptions: ['sort-asc', 'sort-desc', 'group', 'freeze'] as MenuOptionType[] },
+  { id: 'platform-license', label: 'Platform - License', minWidth: 188, allowedOptions: ['group', 'freeze'] as MenuOptionType[] },
+  { id: 'distribution-status', label: 'Distribution status', minWidth: 160, allowedOptions: ['group', 'freeze'] as MenuOptionType[] },
+];
+
 export default function DataTable() {
   const rows: TableRow[] = tableData;
+  const [frozenColumnIndex, setFrozenColumnIndex] = useState<number | null>(null);
+  const [showActionBorder, setShowActionBorder] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Calculate sticky left offsets
+  const columnOffsets = COLUMNS.reduce((acc, _col, idx) => {
+    if (idx === 0) acc.push(0);
+    else acc.push(acc[idx - 1] + COLUMNS[idx - 1].minWidth);
+    return acc;
+  }, [] as number[]);
+
+  const handleScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      // Show border if not scrolled all the way to the right
+      // We use a small threshold (1px) to avoid rounding issues
+      setShowActionBorder(scrollLeft + clientWidth < scrollWidth - 1);
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      handleScroll(); // Initial check
+      container.addEventListener('scroll', handleScroll);
+      window.addEventListener('resize', handleScroll);
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', handleScroll);
+      };
+    }
+  }, []);
+
+  const renderCell = (colId: string, row: TableRow, isBoundary: boolean) => {
+    switch (colId) {
+      case 'asset-name':
+        return <AssetNameCell key={row.id} value={row.assetName} isBoundary={isBoundary} />;
+      case 'distribution-id':
+        return <DistributionIdCell key={row.id} value={row.distributionId} isBoundary={isBoundary} />;
+      case 'creation-date':
+        return <DateTimeCell key={row.id} date={row.creationDate} time={row.creationTime} isBoundary={isBoundary} />;
+      case 'distribution-date':
+        return <DateTimeCell key={row.id} date={row.distributionDate} time={row.distributionTime} isBoundary={isBoundary} />;
+      case 'platform-license':
+        return <PlatformLicenseCell key={row.id} platform={row.platform} license={row.licenseRange} isBoundary={isBoundary} />;
+      case 'distribution-status':
+        return <StatusCell key={row.id} status={row.distributionStatus} isBoundary={isBoundary} />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div ref={scrollContainerRef} className="w-full overflow-x-auto selection:bg-transparent">
       <div className="flex w-full min-w-max">
-        {/* Column 1: Asset name — flex fill, min 240px */}
-        <div className="flex flex-col flex-1 min-w-[240px]">
-          <ColumnHeader label="Asset name" allowedOptions={['sort-asc', 'sort-desc', 'freeze']} />
-          {rows.map((row) => (
-            <AssetNameCell key={row.id} value={row.assetName} />
-          ))}
-        </div>
+        {COLUMNS.map((col, idx) => {
+          const isSticky = frozenColumnIndex !== null && idx <= frozenColumnIndex;
+          const leftOffset = columnOffsets[idx];
+          const isBoundary = frozenColumnIndex !== null && idx === frozenColumnIndex;
 
-        {/* Column 2: Distribution ID — flex fill, min 220px */}
-        <div className="flex flex-col flex-1 min-w-[220px]">
-          <ColumnHeader label="Distribution ID" allowedOptions={['freeze']} />
-          {rows.map((row) => (
-            <DistributionIdCell key={row.id} value={row.distributionId} />
-          ))}
-        </div>
-
-        {/* Column 3: Creation date — flex fill, min 160px */}
-        <div className="flex flex-col flex-1 min-w-[160px]">
-          <ColumnHeader label="Creation date" />
-          {rows.map((row) => (
-            <DateTimeCell key={row.id} date={row.creationDate} time={row.creationTime} />
-          ))}
-        </div>
-
-        {/* Column 4: Distribution date — flex fill, min 160px */}
-        <div className="flex flex-col flex-1 min-w-[160px]">
-          <ColumnHeader label="Distribution date" />
-          {rows.map((row) => (
-            <DateTimeCell key={row.id} date={row.distributionDate} time={row.distributionTime} />
-          ))}
-        </div>
-
-        {/* Column 5: Platform - License — flex fill, min 188px */}
-        <div className="flex flex-col flex-1 min-w-[188px]">
-          <ColumnHeader label="Platform - License" allowedOptions={['group', 'freeze']} />
-          {rows.map((row) => (
-            <PlatformLicenseCell key={row.id} platform={row.platform} license={row.licenseRange} />
-          ))}
-        </div>
-
-        {/* Column 6: Distribution status — flex fill, min 160px */}
-        <div className="flex flex-col flex-1 min-w-[160px]">
-          <ColumnHeader label="Distribution status" allowedOptions={['group', 'freeze']} />
-          {rows.map((row) => (
-            <StatusCell key={row.id} status={row.distributionStatus} />
-          ))}
-        </div>
+          return (
+            <div 
+              key={col.id} 
+              className={`flex flex-col flex-1 ${isSticky ? 'sticky z-20 bg-[#161616]' : ''}`}
+              style={{ 
+                minWidth: col.minWidth,
+                ...(isSticky ? { left: leftOffset } : {})
+              }}
+            >
+              <ColumnHeader 
+                label={col.label} 
+                allowedOptions={col.allowedOptions}
+                index={idx}
+                frozenColumnIndex={frozenColumnIndex}
+                onFreeze={(i) => setFrozenColumnIndex(i)}
+                onUnfreeze={() => setFrozenColumnIndex(null)}
+                isBoundary={isBoundary}
+              />
+              {rows.map((row) => renderCell(col.id, row, isBoundary))}
+            </div>
+          );
+        })}
 
         {/* Column 7: Overflow menu — fixed 56px, sticky right */}
-        <div className="flex flex-col w-14 sticky right-0 z-10 bg-[#161616] shrink-0">
-          <div className="bg-[#262626] border-b border-[#525252] h-10 w-14 shrink-0" />
+        <div className={`flex flex-col w-14 sticky right-0 z-30 bg-[#161616] shrink-0 transition-colors duration-200 ${
+          showActionBorder ? 'border-l-[1px] border-l-[#393939]' : ''
+        }`}>
+          <div className="bg-[#262626] h-10 w-14 shrink-0 border-b border-[#525252]" />
           {rows.map((row) => (
             <OverflowMenuCell key={row.id} />
           ))}

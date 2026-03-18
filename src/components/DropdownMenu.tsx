@@ -10,6 +10,7 @@ interface DropdownMenuProps {
     label: string;
     icon?: 'asc' | 'desc';
     indented?: boolean;
+    disabled?: boolean;
     onClick: () => void;
   }[];
 }
@@ -57,8 +58,9 @@ export default function DropdownMenu({ anchorRect, onClose, options }: DropdownM
           key={index}
           className={`flex items-center gap-2 px-4 py-[11px] text-[#8d8d8d] hover:text-[#c6c6c6] text-[14px] leading-[18px] font-normal font-['Noto_Sans',sans-serif] hover:bg-[#333333] cursor-pointer transition-colors ${
             option.indented ? 'pl-[40px]' : ''
-          }`}
+          } ${option.disabled ? 'opacity-40 pointer-events-none' : ''}`}
           onClick={() => {
+            if (option.disabled) return;
             option.onClick();
             onClose();
           }}
