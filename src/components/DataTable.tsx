@@ -5,7 +5,7 @@ import OverflowMenuIcon from './icons/OverflowMenuIcon';
 import MoreVertIcon from './icons/MoreVertIcon';
 import DropdownMenu from './DropdownMenu';
 
-function DistributionIdCell({ value, isBoundary }: { value: string; isBoundary: boolean }) {
+function DistributionIdCell({ value, isBoundary, isResizing }: { value: string; isBoundary: boolean; isResizing: boolean }) {
   const startChars = value.length > 5 ? value.slice(0, -5) : value;
   const endChars = value.length > 5 ? value.slice(-5) : '';
 
@@ -13,7 +13,7 @@ function DistributionIdCell({ value, isBoundary }: { value: string; isBoundary: 
     <div 
       className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full min-w-0 ${
         isBoundary ? 'border-r border-r-[#393939]' : ''
-      }`}
+      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
       <div 
         className="flex min-w-0 flex-1 text-[#c6c6c6] text-base leading-6 font-normal font-[Noto_Sans,sans-serif]"
@@ -30,12 +30,12 @@ function DistributionIdCell({ value, isBoundary }: { value: string; isBoundary: 
   );
 }
 
-function AssetNameCell({ value, isBoundary }: { value: string; isBoundary: boolean }) {
+function AssetNameCell({ value, isBoundary, isResizing }: { value: string; isBoundary: boolean; isResizing: boolean }) {
   return (
     <div 
       className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
         isBoundary ? 'border-r border-r-[#393939]' : ''
-      }`}
+      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
       <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0 font-normal font-[Noto_Sans,sans-serif]">
         {value}
@@ -44,13 +44,13 @@ function AssetNameCell({ value, isBoundary }: { value: string; isBoundary: boole
   );
 }
 
-function DateTimeCell({ date, time, isBoundary }: { date?: string | null; time?: string; isBoundary: boolean }) {
+function DateTimeCell({ date, time, isBoundary, isResizing }: { date?: string | null; time?: string; isBoundary: boolean; isResizing: boolean }) {
   if (!date) {
     return (
       <div 
         className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${
           isBoundary ? 'border-r border-r-[#393939]' : ''
-        }`}
+        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
       />
     );
   }
@@ -58,7 +58,7 @@ function DateTimeCell({ date, time, isBoundary }: { date?: string | null; time?:
     <div 
       className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
         isBoundary ? 'border-r border-r-[#393939]' : ''
-      }`}
+      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
       <div className="flex flex-col min-w-0 w-full">
         <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
@@ -74,13 +74,13 @@ function DateTimeCell({ date, time, isBoundary }: { date?: string | null; time?:
   );
 }
 
-function PlatformLicenseCell({ platform, license, isBoundary }: { platform: string | null; license?: string; isBoundary: boolean }) {
+function PlatformLicenseCell({ platform, license, isBoundary, isResizing }: { platform: string | null; license?: string; isBoundary: boolean; isResizing: boolean }) {
   if (!platform) {
     return (
       <div 
         className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${
           isBoundary ? 'border-r border-r-[#393939]' : ''
-        }`}
+        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
       />
     );
   }
@@ -88,7 +88,7 @@ function PlatformLicenseCell({ platform, license, isBoundary }: { platform: stri
     <div 
       className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
         isBoundary ? 'border-r border-r-[#393939]' : ''
-      }`}
+      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
       <div className="flex flex-col min-w-0 w-full">
         <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
@@ -104,13 +104,13 @@ function PlatformLicenseCell({ platform, license, isBoundary }: { platform: stri
   );
 }
 
-function StatusCell({ status, isBoundary }: { status: 'Completed' | 'Failed'; isBoundary: boolean }) {
+function StatusCell({ status, isBoundary, isResizing }: { status: 'Completed' | 'Failed'; isBoundary: boolean; isResizing: boolean }) {
   const isCompleted = status === 'Completed';
   return (
     <div 
       className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
         isBoundary ? 'border-r border-r-[#393939]' : ''
-      }`}
+      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
       <div className="flex items-center gap-2">
         <div className="flex items-center h-6 shrink-0">
@@ -160,7 +160,9 @@ function ColumnHeader({
   frozenColumnIndex,
   onFreeze,
   onUnfreeze,
-  isBoundary
+  isBoundary,
+  onResizeStart,
+  isResizing
 }: { 
   label: string; 
   allowedOptions?: MenuOptionType[];
@@ -169,6 +171,8 @@ function ColumnHeader({
   onFreeze: (index: number) => void;
   onUnfreeze: () => void;
   isBoundary: boolean;
+  onResizeStart: (e: React.MouseEvent) => void;
+  isResizing: boolean;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
@@ -189,7 +193,7 @@ function ColumnHeader({
         className={`group ${
           isMenuOpen ? 'bg-[#333333]' : 'bg-[#262626]'
         } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative ${
-          isBoundary ? 'border-r border-r-[#393939]' : ''
+          (isBoundary || isResizing) ? 'border-r border-r-[#393939]' : ''
         }`}
       >
         <span className="text-[#c6c6c6] text-[14px] leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-['Noto_Sans',sans-serif] flex-1">
@@ -204,6 +208,12 @@ function ColumnHeader({
           <MoreVertIcon className="w-full h-full" />
         </div>
         <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-[rgba(141,141,141,0.58)] h-[28px] w-[4px] rounded-tl-[1px] rounded-bl-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+        
+        {/* Resize Handle */}
+        <div 
+          className="absolute right-0 top-0 bottom-0 w-[4px] cursor-col-resize z-20 group-hover:bg-[#393939]/30 transition-colors"
+          onMouseDown={onResizeStart}
+        />
       </div>
       
       {isMenuOpen && anchorRect && (
@@ -244,15 +254,54 @@ const COLUMNS = [
 
 export default function DataTable() {
   const rows: TableRow[] = tableData;
+  const [columnWidths, setColumnWidths] = useState<number[]>(
+    COLUMNS.map(col => col.minWidth)
+  );
+  const [resizingIndex, setResizingIndex] = useState<number | null>(null);
   const [frozenColumnIndex, setFrozenColumnIndex] = useState<number | null>(null);
   const [showActionBorder, setShowActionBorder] = useState(false);
   const [isScrolledLeft, setIsScrolledLeft] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Calculate sticky left offsets
-  const columnOffsets = COLUMNS.reduce((acc, _col, idx) => {
+  const handleResizeStart = (index: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setResizingIndex(index);
+    
+    const startX = e.pageX;
+    const startWidth = columnWidths[index];
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      const deltaX = moveEvent.pageX - startX;
+      const newWidth = Math.max(
+        COLUMNS[index].minWidth,
+        Math.min(COLUMNS[index].maxWidth || 1000, startWidth + deltaX)
+      );
+      
+      setColumnWidths(prev => {
+        const next = [...prev];
+        next[index] = newWidth;
+        return next;
+      });
+      
+      document.body.style.cursor = 'col-resize';
+    };
+
+    const onMouseUp = () => {
+      setResizingIndex(null);
+      document.body.style.cursor = '';
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  };
+
+  // Calculate sticky left offsets based on CURRENT column widths
+  const columnOffsets = columnWidths.reduce((acc, width, idx) => {
     if (idx === 0) acc.push(0);
-    else acc.push(acc[idx - 1] + COLUMNS[idx - 1].minWidth);
+    else acc.push(acc[idx - 1] + columnWidths[idx - 1]);
     return acc;
   }, [] as number[]);
 
@@ -277,20 +326,20 @@ export default function DataTable() {
     }
   }, []);
 
-  const renderCell = (colId: string, row: TableRow, isBoundary: boolean) => {
+  const renderCell = (colId: string, row: TableRow, isBoundary: boolean, isResizing: boolean) => {
     switch (colId) {
       case 'asset-name':
-        return <AssetNameCell key={row.id} value={row.assetName} isBoundary={isBoundary} />;
+        return <AssetNameCell key={row.id} value={row.assetName} isBoundary={isBoundary} isResizing={isResizing} />;
       case 'distribution-id':
-        return <DistributionIdCell key={row.id} value={row.distributionId} isBoundary={isBoundary} />;
+        return <DistributionIdCell key={row.id} value={row.distributionId} isBoundary={isBoundary} isResizing={isResizing} />;
       case 'creation-date':
-        return <DateTimeCell key={row.id} date={row.creationDate} time={row.creationTime} isBoundary={isBoundary} />;
+        return <DateTimeCell key={row.id} date={row.creationDate} time={row.creationTime} isBoundary={isBoundary} isResizing={isResizing} />;
       case 'distribution-date':
-        return <DateTimeCell key={row.id} date={row.distributionDate} time={row.distributionTime} isBoundary={isBoundary} />;
+        return <DateTimeCell key={row.id} date={row.distributionDate} time={row.distributionTime} isBoundary={isBoundary} isResizing={isResizing} />;
       case 'platform-license':
-        return <PlatformLicenseCell key={row.id} platform={row.platform} license={row.licenseRange} isBoundary={isBoundary} />;
+        return <PlatformLicenseCell key={row.id} platform={row.platform} license={row.licenseRange} isBoundary={isBoundary} isResizing={isResizing} />;
       case 'distribution-status':
-        return <StatusCell key={row.id} status={row.distributionStatus} isBoundary={isBoundary} />;
+        return <StatusCell key={row.id} status={row.distributionStatus} isBoundary={isBoundary} isResizing={isResizing} />;
       default:
         return null;
     }
@@ -310,10 +359,10 @@ export default function DataTable() {
           return (
             <div 
               key={col.id} 
-              className={`flex flex-col flex-1 relative ${isSticky ? 'sticky z-20 bg-[#161616]' : ''}`}
+              className={`flex flex-col relative ${isSticky ? 'sticky z-20 bg-[#161616]' : ''} ${resizingIndex === idx ? 'is-resizing' : ''}`}
               style={{ 
-                minWidth: col.minWidth,
-                ...(col.maxWidth ? { maxWidth: col.maxWidth } : {}),
+                width: `${columnWidths[idx]}px`,
+                flexShrink: 0,
                 ...(isSticky ? { left: leftOffset } : {})
               }}
             >
@@ -325,8 +374,10 @@ export default function DataTable() {
                 onFreeze={(i) => setFrozenColumnIndex(i)}
                 onUnfreeze={() => setFrozenColumnIndex(null)}
                 isBoundary={isBoundary}
+                onResizeStart={(e) => handleResizeStart(idx, e)}
+                isResizing={resizingIndex === idx}
               />
-              {rows.map((row) => renderCell(col.id, row, isBoundary))}
+              {rows.map((row) => renderCell(col.id, row, isBoundary, resizingIndex === idx))}
 
               {isBoundary && (
                 <div 
