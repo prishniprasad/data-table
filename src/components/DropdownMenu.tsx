@@ -46,10 +46,10 @@ export default function DropdownMenu({ anchorRect, onClose, options }: DropdownM
       className="fixed z-[9999] bg-[#262626] border border-[#393939] rounded-b-[4px] shadow-[0px_2px_6px_0px_rgba(0,0,0,0.3)] flex flex-col"
       style={{
         top: anchorRect.bottom + 4,
-        left: anchorRect.left,
-        width: anchorRect.width,
-        maxWidth: '288px',
+        left: anchorRect.left - (anchorRect.left + 256 > window.innerWidth ? 256 - anchorRect.width : 0),
+        width: 'fit-content',
         minWidth: '160px',
+        maxWidth: '256px',
       }}
     >
       <div className="h-1 w-full" /> {/* Top spacer */}

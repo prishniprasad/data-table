@@ -14,6 +14,8 @@
   --color-support-error: #fa4d56;
   --color-inverse-white: black;
   --font-noto: "Noto Sans", sans-serif;
+  --scroll-shadow-gradient: linear-gradient(to right, rgba(0,0,0,0.30), rgba(0,0,0,0));
+  --scroll-shadow-gradient-left: linear-gradient(to left, rgba(0,0,0,0.30), rgba(0,0,0,0));
 }
 
 * {

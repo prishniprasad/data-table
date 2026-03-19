@@ -129,15 +129,43 @@ function StatusCell({ status, isBoundary }: { status: 'Completed' | 'Failed'; is
 }
 
 function OverflowMenuCell() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const toggleMenu = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (buttonRef.current) {
+      setAnchorRect(buttonRef.current.getBoundingClientRect());
+      setIsMenuOpen(!isMenuOpen);
+    }
+  };
+
   return (
-    <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-14">
-      <button
-        className="flex items-center justify-center p-1 rounded hover:bg-white/10 transition-colors cursor-pointer text-[#c6c6c6]"
-        title="More options"
-      >
-        <OverflowMenuIcon className="w-4 h-4" />
-      </button>
-    </div>
+    <>
+      <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-14">
+        <button
+          ref={buttonRef}
+          onClick={toggleMenu}
+          className={`flex items-center justify-center p-1 rounded hover:bg-white/10 transition-colors cursor-pointer ${
+            isMenuOpen ? 'bg-white/10 text-white' : 'text-[#c6c6c6]'
+          }`}
+          title="More options"
+        >
+          <OverflowMenuIcon className="w-4 h-4" />
+        </button>
+      </div>
+
+      {isMenuOpen && anchorRect && (
+        <DropdownMenu
+          anchorRect={anchorRect}
+          onClose={() => setIsMenuOpen(false)}
+          options={[
+            { id: 'freeze', label: 'Freeze', onClick: () => console.log('Freeze') }
+          ] as any}
+        />
+      )}
+    </>
   );
 }
 
@@ -185,7 +213,7 @@ function ColumnHeader({
         }`}
         style={width ? { width } : {}}
       >
-        <span className="text-[#c6c6c6] text-[14px] leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-['Noto_Sans',sans-serif]">
+        <span className="text-[#c6c6c6] text-[14px] leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-['Noto_Sans',sans-serif] flex-1">
           {label}
         </span>
         <div 
@@ -227,7 +255,7 @@ function ColumnHeader({
 }
 
 const COLUMNS = [
-  { id: 'asset-name', label: 'Asset name', minWidth: 240, allowedOptions: ['sort-asc', 'sort-desc', 'freeze'] as MenuOptionType[] },
+  { id: 'asset-name', label: 'Asset name', minWidth: 240, maxWidth: 400, allowedOptions: ['sort-asc', 'sort-desc', 'freeze'] as MenuOptionType[] },
   { id: 'distribution-id', label: 'Distribution ID', minWidth: 220, allowedOptions: ['freeze'] as MenuOptionType[] },
   { id: 'creation-date', label: 'Creation date', minWidth: 160, allowedOptions: ['sort-asc', 'sort-desc', 'group', 'freeze'] as MenuOptionType[] },
   { id: 'distribution-date', label: 'Distribution date', minWidth: 160, allowedOptions: ['sort-asc', 'sort-desc', 'group', 'freeze'] as MenuOptionType[] },
@@ -290,7 +318,10 @@ export default function DataTable() {
   };
 
   return (
-    <div ref={scrollContainerRef} className="w-full overflow-x-auto selection:bg-transparent">
+    <div 
+      ref={scrollContainerRef} 
+      className={`w-full overflow-x-auto selection:bg-transparent ${showActionBorder ? 'has-more-right' : ''}`}
+    >
       <div className="flex w-full min-w-max">
         {COLUMNS.map((col, idx) => {
           const isSticky = frozenColumnIndex !== null && idx <= frozenColumnIndex;
@@ -303,6 +334,7 @@ export default function DataTable() {
               className={`flex flex-col flex-1 relative ${isSticky ? 'sticky z-20 bg-[#161616]' : ''}`}
               style={{ 
                 minWidth: col.minWidth,
+                ...(col.maxWidth ? { maxWidth: col.maxWidth } : {}),
                 ...(isSticky ? { left: leftOffset } : {})
               }}
             >
@@ -321,7 +353,7 @@ export default function DataTable() {
                 <div 
                   className="absolute left-full top-0 bottom-0 w-[6px] pointer-events-none transition-opacity duration-200 ease-in-out z-10"
                   style={{
-                    background: 'linear-gradient(to right, rgba(0,0,0,0.30), rgba(0,0,0,0))',
+                    background: 'var(--scroll-shadow-gradient)',
                     opacity: isScrolledLeft ? 1 : 0
                   }}
                 />
@@ -331,9 +363,17 @@ export default function DataTable() {
         })}
 
         {/* Column 7: Overflow menu — fixed 56px, sticky right */}
-        <div className={`flex flex-col w-14 sticky right-0 z-30 bg-[#161616] shrink-0 transition-colors duration-200 ${
+        <div className={`flex flex-col w-14 sticky right-0 z-30 bg-[#161616] shrink-0 transition-colors duration-200 relative ${
           showActionBorder ? 'border-l-[1px] border-l-[#393939]' : ''
         }`}>
+          {/* Action Column Shadow */}
+          <div 
+            className="absolute right-full top-0 bottom-0 w-[6px] pointer-events-none transition-opacity duration-200 ease-in-out z-10"
+            style={{
+              background: 'var(--scroll-shadow-gradient-left)',
+              opacity: showActionBorder ? 1 : 0
+            }}
+          />
           <div className="bg-[#262626] h-10 w-14 shrink-0 border-b border-[#525252]" />
           {rows.map((row) => (
             <OverflowMenuCell key={row.id} />
