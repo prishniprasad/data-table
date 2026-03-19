@@ -10,12 +10,11 @@ function DistributionIdCell({ value, isBoundary, isResizing }: { value: string; 
   const endChars = value.length > 5 ? value.slice(-5) : '';
 
   return (
-    <div 
-      className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full min-w-0 ${
-        isBoundary ? 'border-r border-r-[#393939]' : ''
-      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+    <div
+      className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full min-w-0 ${isBoundary ? 'border-r border-r-[#393939]' : ''
+        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
-      <div 
+      <div
         className="flex min-w-0 flex-1 text-[#c6c6c6] text-base leading-6 font-normal font-[Noto_Sans,sans-serif]"
         title={value}
       >
@@ -32,10 +31,9 @@ function DistributionIdCell({ value, isBoundary, isResizing }: { value: string; 
 
 function AssetNameCell({ value, isBoundary, isResizing }: { value: string; isBoundary: boolean; isResizing: boolean }) {
   return (
-    <div 
-      className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
-        isBoundary ? 'border-r border-r-[#393939]' : ''
-      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+    <div
+      className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
+        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
       <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0 font-normal font-[Noto_Sans,sans-serif]">
         {value}
@@ -47,18 +45,16 @@ function AssetNameCell({ value, isBoundary, isResizing }: { value: string; isBou
 function DateTimeCell({ date, time, isBoundary, isResizing }: { date?: string | null; time?: string; isBoundary: boolean; isResizing: boolean }) {
   if (!date) {
     return (
-      <div 
-        className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${
-          isBoundary ? 'border-r border-r-[#393939]' : ''
-        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+      <div
+        className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
+          } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
       />
     );
   }
   return (
-    <div 
-      className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
-        isBoundary ? 'border-r border-r-[#393939]' : ''
-      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+    <div
+      className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
+        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
       <div className="flex flex-col min-w-0 w-full">
         <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
@@ -77,18 +73,16 @@ function DateTimeCell({ date, time, isBoundary, isResizing }: { date?: string | 
 function PlatformLicenseCell({ platform, license, isBoundary, isResizing }: { platform: string | null; license?: string; isBoundary: boolean; isResizing: boolean }) {
   if (!platform) {
     return (
-      <div 
-        className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${
-          isBoundary ? 'border-r border-r-[#393939]' : ''
-        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+      <div
+        className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
+          } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
       />
     );
   }
   return (
-    <div 
-      className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
-        isBoundary ? 'border-r border-r-[#393939]' : ''
-      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+    <div
+      className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
+        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
       <div className="flex flex-col min-w-0 w-full">
         <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
@@ -107,19 +101,17 @@ function PlatformLicenseCell({ platform, license, isBoundary, isResizing }: { pl
 function StatusCell({ status, isBoundary, isResizing }: { status: 'Completed' | 'Failed'; isBoundary: boolean; isResizing: boolean }) {
   const isCompleted = status === 'Completed';
   return (
-    <div 
-      className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${
-        isBoundary ? 'border-r border-r-[#393939]' : ''
-      } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+    <div
+      className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
+        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
     >
       <div className="flex items-center gap-2">
         <div className="flex items-center h-6 shrink-0">
           <StatusIcon status={status} className="w-4 h-4 shrink-0" />
         </div>
         <span
-          className={`text-base leading-6 whitespace-nowrap font-normal font-[Noto_Sans,sans-serif] ${
-            isCompleted ? 'text-[#42be65]' : 'text-[#fa4d56]'
-          }`}
+          className={`text-base leading-6 whitespace-nowrap font-normal font-[Noto_Sans,sans-serif] ${isCompleted ? 'text-[#42be65]' : 'text-[#fa4d56]'
+            }`}
         >
           {status}
         </span>
@@ -130,10 +122,9 @@ function StatusCell({ status, isBoundary, isResizing }: { status: 'Completed' | 
 
 function ActionHeader({ isActionBoundary }: { isActionBoundary: boolean }) {
   return (
-    <div 
-      className={`bg-[#262626] h-10 w-14 shrink-0 border-b border-[#525252] flex items-center justify-center relative ${
-        isActionBoundary ? 'border-l border-l-[#393939]' : ''
-      }`}
+    <div
+      className={`bg-[#262626] h-10 w-14 shrink-0 border-b border-[#525252] flex items-center justify-center relative ${isActionBoundary ? 'border-l border-l-[#393939]' : ''
+        }`}
     />
   );
 }
@@ -153,8 +144,8 @@ function OverflowMenuCell() {
 
 type MenuOptionType = 'sort-asc' | 'sort-desc' | 'group' | 'freeze';
 
-function ColumnHeader({ 
-  label, 
+function ColumnHeader({
+  label,
   allowedOptions = ['sort-asc', 'sort-desc', 'group', 'freeze'],
   index,
   frozenColumnIndex,
@@ -163,8 +154,8 @@ function ColumnHeader({
   isBoundary,
   onResizeStart,
   isResizing
-}: { 
-  label: string; 
+}: {
+  label: string;
   allowedOptions?: MenuOptionType[];
   index: number;
   frozenColumnIndex: number | null;
@@ -190,32 +181,29 @@ function ColumnHeader({
     <>
       <div
         ref={headerRef}
-        className={`group ${
-          isMenuOpen ? 'bg-[#333333]' : 'bg-[#262626]'
-        } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative ${
-          (isBoundary || isResizing) ? 'border-r border-r-[#393939]' : ''
-        }`}
+        className={`group ${isMenuOpen ? 'bg-[#333333]' : 'bg-[#262626]'
+          } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative ${(isBoundary || isResizing) ? 'border-r border-r-[#393939]' : ''
+          }`}
       >
         <span className="text-[#c6c6c6] text-[14px] leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-['Noto_Sans',sans-serif] flex-1">
           {label}
         </span>
-        <div 
+        <div
           onClick={toggleMenu}
-          className={`${
-            isMenuOpen ? 'opacity-100 bg-[#525252]' : 'opacity-0 group-hover:opacity-100'
-          } transition-all duration-200 text-[#c6c6c6] flex shrink-0 items-center justify-center w-4 h-4 rounded-[4px] relative z-10 cursor-pointer hover:bg-[#525252]`}
+          className={`${isMenuOpen ? 'opacity-100 bg-[#525252]' : 'opacity-0 group-hover:opacity-100'
+            } transition-all duration-200 text-[#c6c6c6] flex shrink-0 items-center justify-center w-4 h-4 rounded-[4px] relative z-10 cursor-pointer hover:bg-[#525252]`}
         >
           <MoreVertIcon className="w-full h-full" />
         </div>
         <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-[rgba(141,141,141,0.58)] h-[28px] w-[4px] rounded-tl-[1px] rounded-bl-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-        
+
         {/* Resize Handle */}
-        <div 
+        <div
           className="absolute right-0 top-0 bottom-0 w-[4px] cursor-col-resize z-20 group-hover:bg-[#393939]/30 transition-colors"
           onMouseDown={onResizeStart}
         />
       </div>
-      
+
       {isMenuOpen && anchorRect && (
         <DropdownMenu
           anchorRect={anchorRect}
@@ -224,15 +212,15 @@ function ColumnHeader({
             { id: 'sort-asc', label: 'Sort ascending', icon: 'asc' as const, onClick: () => console.log('Sort asc') },
             { id: 'sort-desc', label: 'Sort descending', icon: 'desc' as const, onClick: () => console.log('Sort desc') },
             { id: 'group', label: 'Group', indented: true, onClick: () => console.log('Group') },
-            { 
-              id: 'freeze', 
-              label: isBoundary ? 'Unfreeze' : 'Freeze', 
-              indented: true, 
+            {
+              id: 'freeze',
+              label: isBoundary ? 'Unfreeze' : 'Freeze',
+              indented: true,
               disabled: frozenColumnIndex !== null && index < frozenColumnIndex,
               onClick: () => {
                 if (isBoundary) onUnfreeze();
                 else onFreeze(index);
-              } 
+              }
             },
           ] as const)
             .filter(opt => allowedOptions.includes(opt.id as MenuOptionType))
@@ -267,7 +255,7 @@ export default function DataTable() {
     e.preventDefault();
     e.stopPropagation();
     setResizingIndex(index);
-    
+
     const startX = e.pageX;
     const startWidth = columnWidths[index];
 
@@ -277,13 +265,13 @@ export default function DataTable() {
         COLUMNS[index].minWidth,
         Math.min(COLUMNS[index].maxWidth || 1000, startWidth + deltaX)
       );
-      
+
       setColumnWidths(prev => {
         const next = [...prev];
         next[index] = newWidth;
         return next;
       });
-      
+
       document.body.style.cursor = 'col-resize';
     };
 
@@ -299,7 +287,7 @@ export default function DataTable() {
   };
 
   // Calculate sticky left offsets based on CURRENT column widths
-  const columnOffsets = columnWidths.reduce((acc, width, idx) => {
+  const columnOffsets = columnWidths.reduce((acc, _, idx) => {
     if (idx === 0) acc.push(0);
     else acc.push(acc[idx - 1] + columnWidths[idx - 1]);
     return acc;
@@ -346,8 +334,8 @@ export default function DataTable() {
   };
 
   return (
-    <div 
-      ref={scrollContainerRef} 
+    <div
+      ref={scrollContainerRef}
       className={`w-full overflow-x-auto selection:bg-transparent ${showActionBorder ? 'has-more-right' : ''}`}
     >
       <div className="flex w-full min-w-max">
@@ -357,17 +345,17 @@ export default function DataTable() {
           const isBoundary = frozenColumnIndex !== null && idx === frozenColumnIndex;
 
           return (
-            <div 
-              key={col.id} 
+            <div
+              key={col.id}
               className={`flex flex-col relative ${isSticky ? 'sticky z-20 bg-[#161616]' : ''} ${resizingIndex === idx ? 'is-resizing' : ''}`}
-              style={{ 
+              style={{
                 width: `${columnWidths[idx]}px`,
                 flexShrink: 0,
                 ...(isSticky ? { left: leftOffset } : {})
               }}
             >
-              <ColumnHeader 
-                label={col.label} 
+              <ColumnHeader
+                label={col.label}
                 allowedOptions={col.allowedOptions}
                 index={idx}
                 frozenColumnIndex={frozenColumnIndex}
@@ -380,7 +368,7 @@ export default function DataTable() {
               {rows.map((row) => renderCell(col.id, row, isBoundary, resizingIndex === idx))}
 
               {isBoundary && (
-                <div 
+                <div
                   className="absolute left-full top-0 bottom-0 w-[6px] pointer-events-none transition-opacity duration-200 ease-in-out z-10"
                   style={{
                     background: 'var(--scroll-shadow-gradient)',
@@ -393,18 +381,17 @@ export default function DataTable() {
         })}
 
         {/* Column 7: Overflow menu — fixed 56px, sticky right */}
-        <div className={`flex flex-col w-14 sticky right-0 z-30 bg-[#161616] shrink-0 transition-colors duration-200 relative ${
-          showActionBorder ? 'border-l-[1px] border-l-[#393939]' : ''
-        }`}>
+        <div className={`flex flex-col w-14 sticky right-0 z-30 bg-[#161616] shrink-0 transition-colors duration-200 relative ${showActionBorder ? 'border-l-[1px] border-l-[#393939]' : ''
+          }`}>
           {/* Action Column Shadow */}
-          <div 
+          <div
             className="absolute right-full top-0 bottom-0 w-[6px] pointer-events-none transition-opacity duration-200 ease-in-out z-10"
             style={{
               background: 'var(--scroll-shadow-gradient-left)',
               opacity: showActionBorder ? 1 : 0
             }}
           />
-          <ActionHeader 
+          <ActionHeader
             isActionBoundary={showActionBorder}
           />
           {rows.map((row) => (
