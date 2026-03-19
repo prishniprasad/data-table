@@ -128,44 +128,26 @@ function StatusCell({ status, isBoundary }: { status: 'Completed' | 'Failed'; is
   );
 }
 
-function OverflowMenuCell() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const toggleMenu = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (buttonRef.current) {
-      setAnchorRect(buttonRef.current.getBoundingClientRect());
-      setIsMenuOpen(!isMenuOpen);
-    }
-  };
-
+function ActionHeader({ isActionBoundary }: { isActionBoundary: boolean }) {
   return (
-    <>
-      <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-14">
-        <button
-          ref={buttonRef}
-          onClick={toggleMenu}
-          className={`flex items-center justify-center p-1 rounded hover:bg-white/10 transition-colors cursor-pointer ${
-            isMenuOpen ? 'bg-white/10 text-white' : 'text-[#c6c6c6]'
-          }`}
-          title="More options"
-        >
-          <OverflowMenuIcon className="w-4 h-4" />
-        </button>
-      </div>
+    <div 
+      className={`bg-[#262626] h-10 w-14 shrink-0 border-b border-[#525252] flex items-center justify-center relative ${
+        isActionBoundary ? 'border-l border-l-[#393939]' : ''
+      }`}
+    />
+  );
+}
 
-      {isMenuOpen && anchorRect && (
-        <DropdownMenu
-          anchorRect={anchorRect}
-          onClose={() => setIsMenuOpen(false)}
-          options={[
-            { id: 'freeze', label: 'Freeze', onClick: () => console.log('Freeze') }
-          ] as any}
-        />
-      )}
-    </>
+function OverflowMenuCell() {
+  return (
+    <div className="flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-14">
+      <div
+        className="flex items-center justify-center p-1 rounded text-[#c6c6c6] cursor-default pointer-events-none"
+        title="More options"
+      >
+        <OverflowMenuIcon className="w-4 h-4" />
+      </div>
+    </div>
   );
 }
 
@@ -173,7 +155,6 @@ type MenuOptionType = 'sort-asc' | 'sort-desc' | 'group' | 'freeze';
 
 function ColumnHeader({ 
   label, 
-  width, 
   allowedOptions = ['sort-asc', 'sort-desc', 'group', 'freeze'],
   index,
   frozenColumnIndex,
@@ -182,7 +163,6 @@ function ColumnHeader({
   isBoundary
 }: { 
   label: string; 
-  width?: string;
   allowedOptions?: MenuOptionType[];
   index: number;
   frozenColumnIndex: number | null;
@@ -211,7 +191,6 @@ function ColumnHeader({
         } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative ${
           isBoundary ? 'border-r border-r-[#393939]' : ''
         }`}
-        style={width ? { width } : {}}
       >
         <span className="text-[#c6c6c6] text-[14px] leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-['Noto_Sans',sans-serif] flex-1">
           {label}
@@ -374,7 +353,9 @@ export default function DataTable() {
               opacity: showActionBorder ? 1 : 0
             }}
           />
-          <div className="bg-[#262626] h-10 w-14 shrink-0 border-b border-[#525252]" />
+          <ActionHeader 
+            isActionBoundary={showActionBorder}
+          />
           {rows.map((row) => (
             <OverflowMenuCell key={row.id} />
           ))}
