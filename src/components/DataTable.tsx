@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { tableData, type TableRow } from '../data/tableData';
 import StatusIcon from './icons/StatusIcon';
 import OverflowMenuIcon from './icons/OverflowMenuIcon';
 import MoreVertIcon from './icons/MoreVertIcon';
+import HeaderSortAscIcon from './icons/HeaderSortAscIcon';
+import HeaderSortDescIcon from './icons/HeaderSortDescIcon';
 import DropdownMenu from './DropdownMenu';
 
 function DistributionIdCell({ value, isBoundary, isResizing }: { value: string; isBoundary: boolean; isResizing: boolean }) {
@@ -12,7 +14,7 @@ function DistributionIdCell({ value, isBoundary, isResizing }: { value: string; 
   return (
     <div
       className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full min-w-0 ${isBoundary ? 'border-r border-r-[#393939]' : ''
-        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+        } ${isResizing ? 'border-r border-r-[#676767]' : ''}`}
     >
       <div
         className="flex min-w-0 flex-1 text-[#c6c6c6] text-base leading-6 font-normal font-[Noto_Sans,sans-serif]"
@@ -33,7 +35,7 @@ function AssetNameCell({ value, isBoundary, isResizing }: { value: string; isBou
   return (
     <div
       className={`flex items-center h-14 px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
-        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+        } ${isResizing ? 'border-r border-r-[#676767]' : ''}`}
     >
       <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0 font-normal font-[Noto_Sans,sans-serif]">
         {value}
@@ -47,14 +49,14 @@ function DateTimeCell({ date, time, isBoundary, isResizing }: { date?: string | 
     return (
       <div
         className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
-          } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+          } ${isResizing ? 'border-r border-r-[#676767]' : ''}`}
       />
     );
   }
   return (
     <div
       className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
-        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+        } ${isResizing ? 'border-r border-r-[#676767]' : ''}`}
     >
       <div className="flex flex-col min-w-0 w-full">
         <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
@@ -75,14 +77,14 @@ function PlatformLicenseCell({ platform, license, isBoundary, isResizing }: { pl
     return (
       <div
         className={`h-14 border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
-          } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+          } ${isResizing ? 'border-r border-r-[#676767]' : ''}`}
       />
     );
   }
   return (
     <div
       className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
-        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+        } ${isResizing ? 'border-r border-r-[#676767]' : ''}`}
     >
       <div className="flex flex-col min-w-0 w-full">
         <span className="text-[#c6c6c6] text-base leading-6 overflow-hidden text-ellipsis whitespace-nowrap font-normal font-[Noto_Sans,sans-serif]">
@@ -103,7 +105,7 @@ function StatusCell({ status, isBoundary, isResizing }: { status: 'Completed' | 
   return (
     <div
       className={`flex h-14 items-center px-4 py-[10px] border-b border-[var(--color-cell-border)] shrink-0 w-full ${isBoundary ? 'border-r border-r-[#393939]' : ''
-        } ${isResizing ? 'border-r border-r-[#393939]' : ''}`}
+        } ${isResizing ? 'border-r border-r-[#676767]' : ''}`}
     >
       <div className="flex items-center gap-2">
         <div className="flex items-center h-6 shrink-0">
@@ -153,7 +155,11 @@ function ColumnHeader({
   onUnfreeze,
   isBoundary,
   onResizeStart,
-  isResizing
+  onResizeDoubleClick,
+  isResizing,
+  sortDirection,
+  onSort,
+  onClearSort
 }: {
   label: string;
   allowedOptions?: MenuOptionType[];
@@ -163,7 +169,11 @@ function ColumnHeader({
   onUnfreeze: () => void;
   isBoundary: boolean;
   onResizeStart: (e: React.MouseEvent) => void;
+  onResizeDoubleClick: () => void;
   isResizing: boolean;
+  sortDirection: 'asc' | 'desc' | null;
+  onSort: (dir: 'asc' | 'desc') => void;
+  onClearSort: () => void;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
@@ -182,12 +192,16 @@ function ColumnHeader({
       <div
         ref={headerRef}
         className={`group ${isMenuOpen ? 'bg-[#333333]' : 'bg-[#262626]'
-          } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative ${(isBoundary || isResizing) ? 'border-r border-r-[#393939]' : ''
+          } hover:bg-[var(--header-hover-bg)] transition-colors duration-200 cursor-pointer border-b border-[#525252] flex items-center justify-between h-10 px-4 py-[10px] shrink-0 w-full relative ${isResizing ? 'border-r border-r-[#676767]' : isBoundary ? 'border-r border-r-[#393939]' : ''
           }`}
       >
-        <span className="text-[#c6c6c6] text-[14px] leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-['Noto_Sans',sans-serif] flex-1">
-          {label}
-        </span>
+        <div className="flex items-center gap-[6px] flex-1 min-w-0">
+          <span className="text-[#c6c6c6] text-[14px] leading-[18px] tracking-[0.022px] overflow-hidden text-ellipsis whitespace-nowrap font-normal font-['Noto_Sans',sans-serif]">
+            {label}
+          </span>
+          {sortDirection === 'asc' && <HeaderSortAscIcon className="w-4 h-4 shrink-0" />}
+          {sortDirection === 'desc' && <HeaderSortDescIcon className="w-4 h-4 shrink-0" />}
+        </div>
         <div
           onClick={toggleMenu}
           className={`${isMenuOpen ? 'opacity-100 bg-[#525252]' : 'opacity-0 group-hover:opacity-100'
@@ -201,6 +215,7 @@ function ColumnHeader({
         <div
           className="absolute right-0 top-0 bottom-0 w-[4px] cursor-col-resize z-20 group-hover:bg-[#393939]/30 transition-colors"
           onMouseDown={onResizeStart}
+          onDoubleClick={onResizeDoubleClick}
         />
       </div>
 
@@ -209,8 +224,22 @@ function ColumnHeader({
           anchorRect={anchorRect}
           onClose={() => setIsMenuOpen(false)}
           options={([
-            { id: 'sort-asc', label: 'Sort ascending', icon: 'asc' as const, onClick: () => console.log('Sort asc') },
-            { id: 'sort-desc', label: 'Sort descending', icon: 'desc' as const, onClick: () => console.log('Sort desc') },
+            {
+              id: 'sort-asc',
+              label: sortDirection === 'asc' ? 'Sorted ascending' : 'Sort ascending',
+              icon: 'asc' as const,
+              isActive: sortDirection === 'asc',
+              onClear: sortDirection === 'asc' ? onClearSort : undefined,
+              onClick: () => onSort('asc')
+            },
+            {
+              id: 'sort-desc',
+              label: sortDirection === 'desc' ? 'Sorted descending' : 'Sort descending',
+              icon: 'desc' as const,
+              isActive: sortDirection === 'desc',
+              onClear: sortDirection === 'desc' ? onClearSort : undefined,
+              onClick: () => onSort('desc')
+            },
             { id: 'group', label: 'Group', indented: true, onClick: () => console.log('Group') },
             {
               id: 'freeze',
@@ -241,7 +270,7 @@ const COLUMNS = [
 ];
 
 export default function DataTable() {
-  const rows: TableRow[] = tableData;
+  const initialRows = useRef<TableRow[]>(tableData);
   const [columnWidths, setColumnWidths] = useState<number[]>(
     COLUMNS.map(col => col.minWidth)
   );
@@ -249,15 +278,68 @@ export default function DataTable() {
   const [frozenColumnIndex, setFrozenColumnIndex] = useState<number | null>(null);
   const [showActionBorder, setShowActionBorder] = useState(false);
   const [isScrolledLeft, setIsScrolledLeft] = useState(false);
+  const [sortState, setSortState] = useState<{ columnId: string; direction: 'asc' | 'desc' } | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const sortedRows = useMemo(() => {
+    const base = [...initialRows.current];
+    if (!sortState) return base;
+
+    const { columnId, direction } = sortState;
+    const compare = (a: TableRow, b: TableRow): number => {
+      let valA: string | number | null | undefined;
+      let valB: string | number | null | undefined;
+
+      switch (columnId) {
+        case 'asset-name': valA = a.assetName; valB = b.assetName; break;
+        case 'distribution-id': valA = a.distributionId; valB = b.distributionId; break;
+        case 'creation-date': valA = a.creationDate; valB = b.creationDate; break;
+        case 'distribution-date': valA = a.distributionDate ?? ''; valB = b.distributionDate ?? ''; break;
+        case 'platform-license': valA = a.platform ?? ''; valB = b.platform ?? ''; break;
+        case 'distribution-status': valA = a.distributionStatus; valB = b.distributionStatus; break;
+        default: return 0;
+      }
+
+      if (valA == null) valA = '';
+      if (valB == null) valB = '';
+
+      const strA = String(valA).toLowerCase();
+      const strB = String(valB).toLowerCase();
+
+      if (strA < strB) return direction === 'asc' ? -1 : 1;
+      if (strA > strB) return direction === 'asc' ? 1 : -1;
+      return 0;
+    };
+
+    return base.sort(compare);
+  }, [sortState]);
+
+  const handleSort = (columnId: string, direction: 'asc' | 'desc') => {
+    setSortState({ columnId, direction });
+  };
+
+  const handleClearSort = () => {
+    setSortState(null);
+  };
 
   const handleResizeStart = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // Capture current visual widths of all columns to prevent "jumping"
+    let startWidth = columnWidths[index];
+    if (scrollContainerRef.current) {
+      const columnElements = Array.from(scrollContainerRef.current.querySelectorAll('.col-wrapper')) as HTMLElement[];
+      const currentWidths = columnElements.map(el => el.getBoundingClientRect().width);
+      if (currentWidths.length > 0) {
+        setColumnWidths(currentWidths);
+        startWidth = currentWidths[index];
+      }
+    }
+    
     setResizingIndex(index);
-
+    
     const startX = e.pageX;
-    const startWidth = columnWidths[index];
 
     const onMouseMove = (moveEvent: MouseEvent) => {
       const deltaX = moveEvent.pageX - startX;
@@ -284,6 +366,14 @@ export default function DataTable() {
 
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
+  };
+
+  const handleResizeDoubleClick = (index: number) => {
+    setColumnWidths(prev => {
+      const next = [...prev];
+      next[index] = COLUMNS[index].minWidth;
+      return next;
+    });
   };
 
   // Calculate sticky left offsets based on CURRENT column widths
@@ -338,19 +428,19 @@ export default function DataTable() {
       ref={scrollContainerRef}
       className={`w-full overflow-x-auto selection:bg-transparent ${showActionBorder ? 'has-more-right' : ''}`}
     >
-      <div className="flex w-full min-w-max">
+      <div className="flex w-full min-w-full">
         {COLUMNS.map((col, idx) => {
           const isSticky = frozenColumnIndex !== null && idx <= frozenColumnIndex;
           const leftOffset = columnOffsets[idx];
           const isBoundary = frozenColumnIndex !== null && idx === frozenColumnIndex;
 
           return (
-            <div
-              key={col.id}
-              className={`flex flex-col relative ${isSticky ? 'sticky z-20 bg-[#161616]' : ''} ${resizingIndex === idx ? 'is-resizing' : ''}`}
-              style={{
+            <div 
+              key={col.id} 
+              className={`flex flex-col relative col-wrapper ${isSticky ? 'sticky z-20 bg-[#161616]' : ''} ${resizingIndex === idx ? 'is-resizing' : ''}`}
+              style={{ 
                 width: `${columnWidths[idx]}px`,
-                flexShrink: 0,
+                flex: resizingIndex !== null ? `0 0 ${columnWidths[idx]}px` : `1 0 ${columnWidths[idx]}px`,
                 ...(isSticky ? { left: leftOffset } : {})
               }}
             >
@@ -363,9 +453,13 @@ export default function DataTable() {
                 onUnfreeze={() => setFrozenColumnIndex(null)}
                 isBoundary={isBoundary}
                 onResizeStart={(e) => handleResizeStart(idx, e)}
+                onResizeDoubleClick={() => handleResizeDoubleClick(idx)}
                 isResizing={resizingIndex === idx}
+                sortDirection={sortState?.columnId === col.id ? sortState.direction : null}
+                onSort={(dir) => handleSort(col.id, dir)}
+                onClearSort={handleClearSort}
               />
-              {rows.map((row) => renderCell(col.id, row, isBoundary, resizingIndex === idx))}
+              {sortedRows.map((row) => renderCell(col.id, row, isBoundary, resizingIndex === idx))}
 
               {isBoundary && (
                 <div
@@ -394,7 +488,7 @@ export default function DataTable() {
           <ActionHeader
             isActionBoundary={showActionBorder}
           />
-          {rows.map((row) => (
+          {sortedRows.map((row) => (
             <OverflowMenuCell key={row.id} />
           ))}
         </div>

@@ -16,6 +16,8 @@
   --font-noto: "Noto Sans", sans-serif;
   --scroll-shadow-gradient: linear-gradient(to right, rgba(0,0,0,0.30), rgba(0,0,0,0));
   --scroll-shadow-gradient-left: linear-gradient(to left, rgba(0,0,0,0.30), rgba(0,0,0,0));
+  --sort-active-grey: #c6c6c6;
+  --sort-link-blue: #78A9FF;
 }
 
 * {
